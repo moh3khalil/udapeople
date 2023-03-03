@@ -118,34 +118,36 @@ jobs:
             npm install
             npm test
             
-#   scan-frontend:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       - checkout
-#       - restore_cache:
-#           keys: [frontend-build]
-#       - run:
-#           name: Scan front-end
-#           command: |
-#             exit 0
-#             npm audit
+  scan-frontend:
+    docker:
+      - image: cimg/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-deps]
+      - run:
+          name: Scan front-end
+          command: |
+            cd frontend
+            npm install
+            npm test
 
-#   scan-backend:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       - checkout
-#       - restore_cache:
-#           keys: [backend-build]
-#       - run:
-#           name: Scan Back-end
-#           command: |
-#             exit 0
-#             npm audit
+  scan-backend:
+    docker:
+      - image: cimg/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-deps]
+      - run:
+          name: Scan Back-end
+          command: |
+            cd backend
+            npm install
+            npm test
 
-#   deploy-infrastructure:
-#     docker:
+#  deploy-infrastructure:
+ #   docker:
 #       - image: amazon/aws-cli
 #     steps:
 #       - checkout
@@ -344,10 +346,10 @@ workflows:
           requires: [build-frontend]
       - test-backend:
           requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:
