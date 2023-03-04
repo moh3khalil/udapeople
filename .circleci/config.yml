@@ -152,10 +152,10 @@ jobs:
     steps:
        - checkout
        - install_awscli
-       - run:
-           name: Install dependencies
-           command: |
-             yum install -y tar gzip
+      #  - run:
+      #      name: Install dependencies
+      #      command: |
+      #        yum install -y tar gzip
        - run:
             name: Ensure back-end infrastructure exists
             command: |
@@ -351,7 +351,7 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-       - deploy-infrastructure:
+      - deploy-infrastructure:
            requires: [test-frontend, test-backend, scan-frontend, scan-backend]
            filters:
              branches: 
