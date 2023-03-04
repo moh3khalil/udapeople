@@ -338,17 +338,28 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
+            # BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+            #   --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            #   --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            #   --output text)
 
-            export API_URL=http://${BACKEND_PUBLIC_IP}:3030
-            if curl -s "$API_URL/api/status" | grep "ok"
+            # export API_URL=http://${BACKEND_PUBLIC_IP}:3030
+            # if curl -s "$API_URL/api/status" | grep "ok"
+            # then
+            #   exit 0
+            # else
+            #   exit 0
+            # fi
+            export BACKEND_PUBLIC_IP=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            URL="http://$BACKEND_PUBLIC_IP:3030/api/status"
+            #URL="http://g00gle.com"
+            if curl -s --head ${URL}
             then
+              echo "It worked!"
               exit 0
             else
-              exit 0
+              echo "Rolling Back"
+              exit 1
             fi
       - run:
           name: Frontend smoke test.
