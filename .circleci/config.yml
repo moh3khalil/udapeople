@@ -431,12 +431,12 @@ workflows:
           #     only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
+      #- run-migrations:
+          #requires: [configure-infrastructure]
       - deploy-frontend:
-          requires: [run-migrations]
+          requires: [deploy-infrastructur]
       - deploy-backend:
-          requires: [run-migrations]
+          requires: [deploy-infrastructur]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
