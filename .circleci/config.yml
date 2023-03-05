@@ -201,9 +201,9 @@ jobs:
             cat .circleci/ansible/inventory.txt
 
       - persist_to_workspace:
-          root: ~/
+          root: ~/Downloads/udapeople/
           paths:
-            - Downloads/udapeople/.circleci/ansible/inventory.txt
+            - .circleci/ansible/inventory.txt
 
       - destroy-environment
 
