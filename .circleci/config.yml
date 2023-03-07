@@ -356,7 +356,7 @@ jobs:
       # - run:
       #     name: Revert migrations
       #     when: on_fail
-      - revert-migrations
+      #- revert-migrations
       - destroy-environment       
   deploy-frontend:
     docker:
@@ -390,7 +390,7 @@ jobs:
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
 
       - destroy-environment
-      - revert-migrations
+      #- revert-migrations
 
 #   deploy-backend:
 #     docker:
@@ -562,17 +562,41 @@ jobs:
 
   smoke-test:
     docker:
-      # Lightweight Docker image 
-      - image: python:3.7-alpine3.11
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      - checkout 
+      - checkout
       - run:
           name: Install dependencies
           command: |
-            # your code here            
-            pip install awscli
-            apk add --update curl nodejs npm
+            sudo apt-get install curl python python-pip && pip install awscl
+    # docker:
+    #   # Lightweight Docker image 
+    #   - image: python:3.7-alpine3.11
+    # steps:
+    #   # Checkout code from git
+    #   - checkout 
+    #   - run:
+    #       name: Install dependencies
+    #       command: |
+    #         # your code here            
+    #         pip install awscli
+    #         apk add --update curl nodejs npm
+      - run:
+          name: Frontend smoke test.
+          command: |
+            # your code here
+            echo ${CIRCLE_WORKFLOW_ID:0:7}
+            echo ${CIRCLE_WORKFLOW_ID:0:7}
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.us-east-1.amazonaws.com/#/employees"            
+            curl -s http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.us-east-1.amazonaws.com/#/employees | grep "Welcome"
+            echo ${URL} 
+            if curl -s http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.us-east-1.amazonaws.com/#/employees | grep "Welcome"
+            then
+                # Change this to 0 after the job fails
+              return 0
+            else
+              return 1
+            fi
       - run:
           name: Backend smoke test.
           command: |
@@ -590,24 +614,9 @@ jobs:
             else
               return 1
             fi
-      - run:
-          name: Frontend smoke test.
-          command: |
-            # your code here
-            echo ${CIRCLE_WORKFLOW_ID:0:7}
-            echo ${CIRCLE_WORKFLOW_ID:0:7}
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.us-east-1.amazonaws.com/#/employees"            
-            curl -s http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.us-east-1.amazonaws.com/#/employees | grep "Welcome"
-            echo ${URL} 
-            if curl -s http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website.us-east-1.amazonaws.com/#/employees | grep "Welcome"
-            then
-                # Change this to 0 after the job fails
-              return 0
-            else
-              return 1
-            fi
+
       # Here's where you will add some code to rollback on failure  
-      - revert-migrations
+      #- revert-migrations
       - destroy-environment
 
   cloudfront-update:
