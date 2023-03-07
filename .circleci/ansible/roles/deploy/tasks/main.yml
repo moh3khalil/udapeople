@@ -1,33 +1,66 @@
-- name: Copy backend files
-  become: true
+---
+
+- name: Creates App directory
+  file:
+    path: ~/app
+    state: directory
+
+- name: Upload dist to app directory
   copy:
-      src: /home/backend.tar.gz
-      dest: /home/ubuntu/backend.tar.gz
+    src: files/dist.zip
+    dest: "~/app"
 
-- name: Start PM2
+- name: Install dependencies
   shell: |
-      cd /home/ubuntu/
-      tar xzvf backend.tar.gz
+    cd ~/app
+    unzip dist.zip
+    rm -rf dist.zip
+    npm i
+- name: Start backend
+  shell: pm2 start ~/app/main.js --name backend -f
+  environment:
+    ENVIRONMENT: production
+    NODE_ENV: production
+    VERSION: 1
+    TYPEORM_CONNECTION: "{{ lookup('env','TYPEORM_CONNECTION') }}"
+    TYPEORM_MIGRATIONS_DIR: ~/app/migrations
+    TYPEORM_MIGRATIONS: ~/app/migrations/*.ts
+    TYPEORM_ENTITIES: ~/app/modules/domain/**/*.entity.js
+    TYPEORM_HOST: "{{ lookup('env','TYPEORM_HOST') }}"
+    TYPEORM_PORT: "{{ lookup('env','TYPEORM_PORT') }}"
+    TYPEORM_USERNAME: "{{ lookup('env','TYPEORM_USERNAME') }}"
+    TYPEORM_PASSWORD: "{{ lookup('env','TYPEORM_PASSWORD') }}"
+    TYPEORM_DATABASE: "{{ lookup('env','TYPEORM_DATABASE') }}"
+# - name: Copy backend files
+#   become: true
+#   copy:
+#       src: /home/backend.tar.gz
+#       dest: /home/ubuntu/backend.tar.gz
 
-      cd backend
-
-      sudo npm install -g npm@latest
-      sudo npm install -g webpack-dev-server
-      sudo npm install
-      sudo npm run build
-      sudo pm2 start npm --name backend -- start
-
-# - name: start pm2 for dist/main.js
-#   become: no
+# - name: Start PM2
 #   shell: |
-#       sudo chown ubuntu:ubuntu /home/ubuntu/.pm2/rpc.sock /home/ubuntu/.pm2/pub.sock
-#       pm2 start main.js
-#   args:
-#       chdir: /home/ubuntu/backend/dist
+#       cd /home/ubuntu/
+#       tar xzvf backend.tar.gz
 
-# /root/project
+#       cd backend
 
-# LICENSE.md              images                  udapeople.png
-# README.md               instructions            util
-# backend                 package-lock.json
-# frontend                udapeople-pipeline.png
+#       sudo npm install -g npm@latest
+#       sudo npm install -g webpack-dev-server
+#       sudo npm install
+#       sudo npm run build
+#       sudo pm2 start npm --name backend -- start
+
+# # - name: start pm2 for dist/main.js
+# #   become: no
+# #   shell: |
+# #       sudo chown ubuntu:ubuntu /home/ubuntu/.pm2/rpc.sock /home/ubuntu/.pm2/pub.sock
+# #       pm2 start main.js
+# #   args:
+# #       chdir: /home/ubuntu/backend/dist
+
+# # /root/project
+
+# # LICENSE.md              images                  udapeople.png
+# # README.md               instructions            util
+# # backend                 package-lock.json
+# # frontend                udapeople-pipeline.png
