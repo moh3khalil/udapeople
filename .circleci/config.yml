@@ -343,13 +343,13 @@ jobs:
             cat migration.log
             migration_succesful=$(cat migration.log | grep -c "has been executed successfully")
             if [ $migration_succesful > 0 ]; then exit 0; else exit 1; fi;
-      - run:
-          name: Send migration results to memstash
-          command: |
-            curl -H "Content-Type: text/plain" \
-              -H "token: 76f9514c-4cdd-4658-88f9-d7a705af6604" \
-              --request PUT --data "1" \
-              https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+    #   - run:
+    #       name: Send migration results to memstash
+    #       command: |
+    #         curl -H "Content-Type: text/plain" \
+    #           -H "token: 76f9514c-4cdd-4658-88f9-d7a705af6604" \
+    #           --request PUT --data "1" \
+    #           https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
       # Here's where you will add some code to rollback on failure
       # - run:
       #     name: Revert migrations
@@ -732,12 +732,12 @@ workflows:
         #       only: [main]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      #- run-migrations:
-          #requires: [configure-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       - deploy-frontend:
-          requires: [configure-infrastructure]
+          requires: [run-migrations]
       - deploy-backend:
-          requires: [configure-infrastructure]
+          requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
