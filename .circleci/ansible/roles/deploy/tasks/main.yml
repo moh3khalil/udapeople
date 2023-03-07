@@ -17,7 +17,11 @@
     rm -rf dist.zip
     npm i
 - name: Start backend
-  shell: pm2 start ~/app/main.js --name backend -f
+  shell:
+    sudo pm2 start npm --name backend -- start
+    sudo chown ubuntu:ubuntu /home/ubuntu/.pm2/rpc.sock /home/ubuntu/.pm2/pub.sock
+    ls ~/app
+    pm2 start ~/app/main.js
   environment:
     ENVIRONMENT: production
     NODE_ENV: production
