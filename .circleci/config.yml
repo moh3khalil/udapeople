@@ -561,26 +561,26 @@ jobs:
 #       - destroy-environment
 
   smoke-test:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt-get install curl python python-pip && pip install awscl
     # docker:
-    #   # Lightweight Docker image 
-    #   - image: python:3.7-alpine3.11
+    #   - image: circleci/node:13.8.0
     # steps:
-    #   # Checkout code from git
-    #   - checkout 
+    #   - checkout
     #   - run:
     #       name: Install dependencies
     #       command: |
-    #         # your code here            
-    #         pip install awscli
-    #         apk add --update curl nodejs npm
+    #         sudo apt-get install curl python python-pip && pip install awscl
+    docker:
+      # Lightweight Docker image 
+      - image: python:3.7-alpine3.11
+    steps:
+      # Checkout code from git
+      - checkout 
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here            
+            pip install awscli
+            apk add --update curl nodejs npm
       - run:
           name: Frontend smoke test.
           command: |
@@ -707,7 +707,7 @@ jobs:
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
                 echo "--------------Cleanup Success----------------"
               fi
-        - revert-migrations
+        #- revert-migrations
 
 workflows:
   default:
