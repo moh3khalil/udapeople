@@ -308,6 +308,7 @@ jobs:
             cd backend
             npm install
             npm run migrations > migrations_dump.txt
+        #- destroy-environment
 #   run-migrations:
 #     docker:
 #       # Docker image here that supports NodeJS
@@ -369,7 +370,7 @@ jobs:
       #     name: Revert migrations
       #     when: on_fail
       #- revert-migrations
-      - destroy-environment       
+             
   deploy-frontend:
     docker:
       - image: cimg/base:stable
