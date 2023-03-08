@@ -730,8 +730,8 @@ workflows:
         #       only: [main]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      #- run-migrations:
-          #requires: [configure-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [configure-infrastructure]
       - deploy-backend:
