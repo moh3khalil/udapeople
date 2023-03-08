@@ -259,6 +259,10 @@ jobs:
             ansible-playbook \
               -i .circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
+            npm run migrations > migration.log
+            cat migration.log
+            migration_succesful=$(cat migration.log | grep -c "has been executed successfully")
+            if [ $migration_succesful > 0 ]; then exit 0; else exit 1; fi
       # Here's where you will add some code to rollback on failure  
       - destroy-environment      
 
