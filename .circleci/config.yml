@@ -125,22 +125,6 @@ jobs:
             - package.json
             - backend.tar.gz
 
-#   test-frontend:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       # Checkout code from git
-#       - checkout
-#       # Restore from cache
-#       - restore_cache:
-#           key: frontend-build
-#       # Your job code here
-#       - run:
-#           name: test frontend
-#           command: |
-#             # Your code here
-#             cd frontend
-#             npm run test
   test-frontend:
     docker:
       - image: circleci/node:13.8.0
@@ -277,6 +261,8 @@ jobs:
           name: Configure server
           command: |
             cd backend
+            npm install
+            npm run migrations > migrations_dump.txt
             echo ENVIRONMENT=production > ".env"
             echo TYPEORM_CONNECTION=postgres >> ".env"
             echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> ".env"
@@ -295,19 +281,19 @@ jobs:
               .circleci/ansible/configure-server.yml
       # Here's where you will add some code to rollback on failure  
       - destroy-environment      
-    run-migrations:
-      docker:
-      # Docker image here that supports NodeJS
-        - image: circleci/node:13.8.0
-      steps:
-      # Checkout code from git
-        - checkout
-        - run:
-          name: Run migrations
-          command: |
-            cd backend
-            npm install
-            npm run migrations > migrations_dump.txt
+    # run-migrations:
+    #   docker:
+    #   # Docker image here that supports NodeJS
+    #     - image: circleci/node:13.8.0
+    #   steps:
+    #   # Checkout code from git
+    #     - checkout
+    #     - run:
+    #       name: Run migrations
+    #       command: |
+    #         cd backend
+    #         npm install
+    #         npm run migrations > migrations_dump.txt
         #- destroy-environment
 #   run-migrations:
 #     docker:
@@ -743,8 +729,8 @@ workflows:
         #       only: [main]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
+      #- run-migrations:
+          #requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [configure-infrastructure]
       - deploy-backend:
