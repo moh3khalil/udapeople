@@ -9,8 +9,6 @@ import * as cors from 'cors';
 import { TransformInterceptor } from './modules/common/interceptors/TransformInterceptor';
 import * as express from 'express';
 import { ErrorFilter } from './modules/errors/error.filter';
-import * as https from 'https';
-import * as fs from 'fs';
 
 async function bootstrap() {
   const logger = new AppLogger();
@@ -47,10 +45,6 @@ async function bootstrap() {
       }
     },
   };
-  // const option = {
-  //   key: fs.readFileSync('./secrets/key.pem'),
-  //   cert: fs.readFileSync('./secrets/cert.pem'),
-  // };
   app.use(cors(corsOptions));
   app.useGlobalFilters(new ErrorFilter());
   await app.listen(config.PORT);
