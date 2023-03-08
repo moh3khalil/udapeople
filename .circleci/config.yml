@@ -292,7 +292,7 @@ jobs:
           no_output_timeout: 20m
           working_directory: ./backend
           command: |
-            npm i
+            npm i npm@latest
             sudo npm install pm2 -g
             echo ENVIRONMENT=production > ".env"
             echo TYPEORM_CONNECTION=postgres >> ".env"
