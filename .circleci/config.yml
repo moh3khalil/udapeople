@@ -295,8 +295,7 @@ jobs:
           command: |
             cd backend
             npm i 
-            sudo npm install pm2 -g
-            npm run premigrations  
+            sudo npm install pm2 -g  
             npm run migrations > migration.log
             cat migration.log
             migration_succesful=$(cat migration.log | grep -c "has been executed successfully")
