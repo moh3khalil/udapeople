@@ -9,8 +9,6 @@ import * as cors from 'cors';
 import { TransformInterceptor } from './modules/common/interceptors/TransformInterceptor';
 import * as express from 'express';
 import { ErrorFilter } from './modules/errors/error.filter';
-import * as https from 'https';
-import * as fs from 'fs';
 
 async function bootstrap() {
   const logger = new AppLogger();
@@ -30,7 +28,7 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('customTag')
     .setBasePath(apiVersionPrefix)
-    .addBearerAuth() // here is an intentional compile error. Remove the "x" and the backend should compile.
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup(`api/${apiVersionPrefix}`, app, document);
@@ -47,11 +45,7 @@ async function bootstrap() {
       }
     },
   };
-  // const option = {
-  //   key: fs.readFileSync('./secrets/key.pem'),
-  //   cert: fs.readFileSync('./secrets/cert.pem'),
-  // };
-  app.use(cors(corsOptions));
+  app.use(cors({  "origin": "*", "methods": "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"}));
   app.useGlobalFilters(new ErrorFilter());
   await app.listen(config.PORT);
   logger.log(`Listening on port ${config.PORT}.`);
