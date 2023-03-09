@@ -254,6 +254,7 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+            npm run migrations
             cd ..
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook \
@@ -292,8 +293,7 @@ jobs:
           no_output_timeout: 20m
           working_directory: ./backend
           command: |
-            npm i npm@latest
-            npm-install-peers
+            npm i 
             sudo npm install pm2 -g
             echo ENVIRONMENT=production > ".env"
             echo TYPEORM_CONNECTION=postgres >> ".env"
