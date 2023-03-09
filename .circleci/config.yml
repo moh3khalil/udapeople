@@ -254,13 +254,14 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
-            npm run premigrations
-            npm run migrations
             cd ..
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook \
               -i .circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
+            cd backend
+            npm run premigrations
+            npm run migrations  
       # Here's where you will add some code to rollback on failure  
       - destroy-environment      
 
