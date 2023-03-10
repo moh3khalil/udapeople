@@ -43,7 +43,7 @@
 - name: sudo usermod -aG docker root
   become: True
   shell:
-    cmd: "sudo usermod -aG docker ubuntu"
+    cmd: "usermod -aG docker ubuntu"
     chdir: .
 
 # - service: name=docker state=restarted
@@ -57,7 +57,8 @@
     dest: /usr/local/bin/docker-compose
     mode: 'u+wx,g+wx,o+wx'
 
-- copy:
+- name: copy docker-compose
+  ansible.windows.win_copy:
     src: C:/Users/moham/Downloads/udapeople/util/docker-compose.yml
     dest: /home/ubuntu/
 
