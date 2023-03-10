@@ -294,6 +294,7 @@ jobs:
           working_directory: ./backend
           command: |
             npm install
+            npm run premigrations
             npm run migrations
           # command: |
           #   cd backend
@@ -315,8 +316,8 @@ jobs:
       # - run:
       #     name: Revert migrations
       #     when: on_fail
-      - revert-migrations
-      #- destroy-environment       
+      #- revert-migrations
+      - destroy-environment       
 
   deploy-frontend:
     docker:
