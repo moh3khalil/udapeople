@@ -1,0 +1,3 @@
+URL1:  https://github.com/moh3khalil/udapeople
+URL2:  http://udapeople-e32b437.s3-website-us-east-1.amazonaws.com/#/employees
+URL3:  https://d1tzyx44jmx9a2.cloudfront.net/#/employees
