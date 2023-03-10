@@ -58,7 +58,7 @@
     mode: 'u+wx,g+wx,o+wx'
 
 - copy:
-    src: ~/Downloads/udapeople/util/docker-compose.yml
+    src: C:/Users/moham/Downloads/udapeople/util/docker-compose.yml
     dest: /home/ubuntu/
 
 - name: Run PostgresQL DB
