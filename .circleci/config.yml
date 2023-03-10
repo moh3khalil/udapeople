@@ -316,7 +316,7 @@ jobs:
       #     name: Revert migrations
       #     when: on_fail
       - revert-migrations
-      - destroy-environment       
+      #- destroy-environment       
 
   deploy-frontend:
     docker:
