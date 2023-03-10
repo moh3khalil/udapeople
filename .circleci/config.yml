@@ -262,40 +262,53 @@ jobs:
             
       # Here's where you will add some code to rollback on failure  
       - destroy-environment      
-
   run-migrations:
-    docker:
-      # Docker image here that supports NodeJS
-      - image: circleci/node:13.8.0
+    docker: 
+      - image: mareimorsy/aws-node
+
     steps:
-      # Checkout code from git
       - checkout
-      - attach_workspace:
-          at: ~/
-      - restore_cache:
-          key: backend-build
-      - run:
-          name: Install AWS CLI dependencies
-          working_directory: /tmp
-          command: |
-            sudo apt-get update && sudo apt-get install -yy less
-            sudo apt-get install unzip -y
-            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            sudo ./aws/install
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       curl -sL https://rpm.nodesource.com/setup_12.x | bash -
-      #       yum -y install nodejs npm tar gzip jq git
       - run:
           name: Run migrations
-          no_output_timeout: 20m
-          working_directory: ./backend
           command: |
+            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            cd backend
             npm install
             npm run premigrations
             npm run migrations
+  # run-migrations:
+  #   docker:
+  #     # Docker image here that supports NodeJS
+  #     - image: circleci/node:13.8.0
+  #   steps:
+  #     # Checkout code from git
+  #     - checkout
+  #     - attach_workspace:
+  #         at: ~/
+  #     - restore_cache:
+  #         key: backend-build
+  #     - run:
+  #         name: Install AWS CLI dependencies
+  #         working_directory: /tmp
+  #         command: |
+  #           sudo apt-get update && sudo apt-get install -yy less
+  #           sudo apt-get install unzip -y
+  #           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  #           unzip awscliv2.zip
+  #           sudo ./aws/install
+  #     # - run:
+  #     #     name: Install dependencies
+  #     #     command: |
+  #     #       curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+  #     #       yum -y install nodejs npm tar gzip jq git
+  #     - run:
+  #         name: Run migrations
+  #         no_output_timeout: 20m
+  #         working_directory: ./backend
+  #         command: |
+  #           npm install
+  #           npm run premigrations
+  #           npm run migrations
           # command: |
           #   cd backend
           #   npm i 
@@ -572,16 +585,16 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure
+      #- deploy-infrastructure
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
           #   branches:
           #     #only: [test-feature-branch]
           #     only: [main]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
+      #- configure-infrastructure:
+          #requires: [deploy-infrastructure]
+      - run-migrations
+          #requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
       - deploy-backend:
