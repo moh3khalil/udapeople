@@ -57,9 +57,8 @@
     dest: /usr/local/bin/docker-compose
     mode: 'u+wx,g+wx,o+wx'
 
-- name: copy docker-compose
-  ansible.windows.win_copy:
-    src: C:/Users/moham/Downloads/udapeople/util/docker-compose.yml
+- copy:
+    src: /root/project/util/docker-compose.yml
     dest: /home/ubuntu/
 
 - name: Run PostgresQL DB
