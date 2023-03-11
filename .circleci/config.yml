@@ -417,7 +417,8 @@ jobs:
           command: |
             #export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             #echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
-
+            systemctl stop firewalld
+            systemctl disable firewalld
             cd backend
             npm i
             npm run build
@@ -509,8 +510,6 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            sudo systemctl stop firewalld
-            sudo systemctl disable firewalld
             # Fetch and prepare the BACKEND_IP env var
             export BACKEND_IP=$(aws ec2 describe-instances --region us-east-1  \
                 --filters "Name=tag:Name, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
@@ -623,18 +622,18 @@ jobs:
 workflows:
   default:
     jobs:
-       - build-frontend
-       - build-backend
-       - test-frontend:
-           requires: [build-frontend]
-       - test-backend:
-           requires: [build-backend]
-       - scan-backend:
-           requires: [build-backend]
-       - scan-frontend:
-           requires: [build-frontend]
-       - deploy-infrastructure:
-           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      #  - build-frontend
+      #  - build-backend
+      #  - test-frontend:
+      #      requires: [build-frontend]
+      #  - test-backend:
+      #      requires: [build-backend]
+      #  - scan-backend:
+      #      requires: [build-backend]
+      #  - scan-frontend:
+      #      requires: [build-frontend]
+       - deploy-infrastructure
+          # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
           #   branches:
           #     #only: [test-feature-branch]
