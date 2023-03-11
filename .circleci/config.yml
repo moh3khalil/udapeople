@@ -403,7 +403,7 @@ jobs:
             npm run build:prod
             # aws s3 sync dist s3://udapeople-project
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      - revert-migrations
+      #- revert-migrations
       - destroy-environment   
   deploy-backend:
     docker:
@@ -417,8 +417,6 @@ jobs:
           command: |
             #export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             #echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
-            systemctl stop firewalld
-            systemctl disable firewalld
             cd backend
             npm i
             npm run build
