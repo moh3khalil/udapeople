@@ -432,7 +432,8 @@ jobs:
             cp artifact.tar.gz ~/project/.circleci/ansible/roles/deploy/artifact.tar.gz
             ls ../.circleci/ansible/roles/deploy/
             cd ../.circleci/ansible
-            ansible-playbook -i inventory.txt deploy-backend.yml                      
+            ansible-playbook -i inventory.txt deploy-backend.yml
+                                  
   # deploy-backend:
   #   docker:
   #     # Docker image here that supports Ansible
